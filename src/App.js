@@ -1,10 +1,10 @@
-import React,{useContext, useReducer, useEffect, useRef, useState, createContext} from 'react';
+import React, {useContext, useReducer, useEffect, useRef, useState, createContext} from "react";
 
 const HOST_API = "http://localhost:8080/api"
 const initialState = {
-  list: [],
+  list: [], 
   item: {}
-};
+}
 const Store = createContext(initialState)
 
 const Form = () => {
@@ -13,6 +13,7 @@ const Form = () => {
   const { dispatch, state: { item } } = useContext(Store);
   const [state, setState] = useState({item});
 
+//Función para añadir item
   const onAdd = (event) => {
     event.preventDefault();
 
@@ -36,7 +37,8 @@ const Form = () => {
         formRef.current.reset();
       });
   }
-
+  
+  //Función para editar el item
   const onEdit = (event) => {
     event.preventDefault();
 
@@ -69,12 +71,11 @@ const Form = () => {
     {item.id && <button onClick={onEdit}>Actualizar</button>}
     {!item.id && <button onClick={onAdd}>Crear</button>}
   </form>
-
 }
 
-const List = () => {
+const List = () =>{
   const{dispatch, state} = useContext(Store);
-
+  
   useEffect(() =>{
     fetch(HOST_API+"/todos")
     .then(response => response.json())
@@ -83,6 +84,7 @@ const List = () => {
     })
   }, [state.list.length, dispatch]);
 
+  //Eliminar el item
   const onDelete = (id) => {
     fetch(HOST_API + "/" + id + "/todo", {
       method: "DELETE"
@@ -96,7 +98,8 @@ const List = () => {
     dispatch({ type: "edit-item", item: todo })
   };
 
-  <div>
+//Crea la tabla
+  return <div>
   <table >
     <thead>
       <tr>
@@ -149,6 +152,7 @@ function reducer(state, action) {
 }
 
 const StoreProvider = ({children}) => {
+  
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return <Store.Provider value = {{state,dispatch}}>
@@ -161,7 +165,8 @@ function App() {
   return (
     <StoreProvider>
       <Form/>
-      <List/>
+
+      <List />
     </StoreProvider>
   );
 }
